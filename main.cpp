@@ -223,10 +223,10 @@ int main()
 		
 		int winner_algo = winner(rnn_move, htm_move);
 		std::cout << "Round " << i << std::endl;
-		//std::cout << "RNN pred: " << rnn_out << ", HTM pred: " << ::softmax(htm_out) << std::endl;
-		//std::cout << "RNN: " << move2String(rnn_move) << ", " << "HTM: " << move2String(htm_move)
-		//	<< ", Winner: "<< (winner_algo==1?"RNN":(winner_algo==0?"draw":"HTM")) << std::endl;
-		//std::cout << std::endl;
+		std::cout << "RNN pred: " << rnn_out << ", HTM pred: " << ::softmax(htm_out) << std::endl;
+		std::cout << "RNN: " << move2String(rnn_move) << ", " << "HTM: " << move2String(htm_move)
+			<< ", Winner: "<< (winner_algo==1?"RNN":(winner_algo==0?"draw":"HTM")) << std::endl;
+		std::cout << std::endl;
 
 		
 		rnn_last_move = rnn_move;
