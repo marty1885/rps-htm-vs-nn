@@ -1,4 +1,5 @@
 #define CNN_SINGLE_THREAD
+#define CNN_USE_AVX
 #include <cstdlib>
 #include <iostream>
 #include <vector>
@@ -64,6 +65,7 @@ public:
 		}
 		last_input_ = vec_t(input.begin(), input.end());
 		
+		//Train once all needed data collected
 		if(input_.size() == RNN_DATA_PER_EPOCH) {
 			assert(input_.size() == output_.size());
 			nn_.at<recurrent_layer>(0).seq_len(RNN_DATA_PER_EPOCH);
@@ -77,9 +79,11 @@ public:
 		}
 		
 		
+		//Predict the opponent's next mvoe
 		vec_t out = nn_.predict(vec_t(input.begin(), input.end()));
 		
 		assert(out.size() == 3);
+		//Convert to xarray
 		xt::xarray<float> r = xt::zeros<float>({3});
 		for(size_t i=0;i<out.size();i++)
 			r[i] = out[i];
@@ -142,6 +146,7 @@ enum Move
 	Scissor
 };
 
+//Converts agent predictions to agent move
 int predToMove(int pred)
 {
 	if(pred == Rock)
@@ -152,6 +157,9 @@ int predToMove(int pred)
 		return Rock;
 }
 
+//1 - first agent wins
+//0 - draw
+//-1 -second agent winds
 int winner(int move1, int move2)
 {
 	if(move1 == move2)
@@ -177,6 +185,7 @@ std::string move2String(int move)
 	return "Scissor";
 }
 
+//xtensor does not provide a softmax function.
 xt::xarray<float> softmax(const xt::xarray<float>& x)
 {
 	auto b = xt::eval(xt::exp(x-xt::amax(x)[0]));
