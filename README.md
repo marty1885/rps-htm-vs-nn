@@ -8,7 +8,7 @@ tiny-dnn: https://github.com/tiny-dnn/tiny-dnn
 
 ## Build and run
 ```
-c++ main.cpp -o main -O3 -std=c++14 -lnupic_core -pthread
+c++ main.cpp -o main -O3 -std=c++14 -lnupic_core -pthread -march=native
 ./main
 ```
 

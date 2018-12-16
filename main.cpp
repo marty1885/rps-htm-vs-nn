@@ -192,6 +192,22 @@ xt::xarray<float> softmax(const xt::xarray<float>& x)
 	return b/xt::sum(b)[0];
 }
 
+//A hacky argmax implementation
+template <typename T>
+size_t argmax(const xt::xarray<T>& arr)
+{
+	T max_val = arr[0];
+	size_t idx = 0;
+	
+	for(size_t i=0;i<arr.size();i++) {
+		if(max_val > arr[i]) {
+			idx = i;
+			max_val = arr[i];
+		}
+	}
+	return idx;
+}
+
 int main()
 {
 	//Initialize both AI
@@ -205,15 +221,15 @@ int main()
 	size_t draw = 0;
 	size_t htm_win = 0;
 
-	int num_games = 1000*100;
+	int num_games = 20*10000;
 	for(int i=0;i<num_games;i++) {
 		//Run RNN
 		auto rnn_out = player1.compute(htm_last_move);
-		int rnn_pred = xt::argmax(rnn_out)[0];
+		int rnn_pred = argmax(rnn_out);
 		
 		//Run HTM
 		auto htm_out = player2.compute(rnn_last_move);
-		int htm_pred = xt::argmax(htm_out)[0];
+		int htm_pred = argmax(htm_out);
 		
 		int rnn_move = predToMove(rnn_pred);
 		int htm_move = predToMove(htm_pred);
