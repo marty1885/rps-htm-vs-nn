@@ -7,7 +7,7 @@
 #include "tiny_dnn/tiny_dnn.h"
 #include "tiny_dnn/xtensor/xadapt.hpp"
 #include "tiny_dnn/xtensor/xio.hpp"
-#include "tiny_dnn/xtensor/xsort.hpp"
+//#include "tiny_dnn/xtensor/xsort.hpp"
 
 #include "htmhelper.hpp"
 
@@ -199,8 +199,8 @@ size_t argmax(const xt::xarray<T>& arr)
 	T max_val = arr[0];
 	size_t idx = 0;
 	
-	for(size_t i=0;i<arr.size();i++) {
-		if(max_val > arr[i]) {
+	for(size_t i=1;i<arr.size();i++) {
+		if(max_val < arr[i]) {
 			idx = i;
 			max_val = arr[i];
 		}
@@ -215,7 +215,7 @@ int main()
 	HTMPlayer player2;
 	
 	int rnn_last_move = 0;
-	int htm_last_move = 0;
+	int htm_last_move = 1;
 
 	size_t rnn_win = 0;
 	size_t draw = 0;
@@ -225,11 +225,11 @@ int main()
 	for(int i=0;i<num_games;i++) {
 		//Run RNN
 		auto rnn_out = player1.compute(htm_last_move);
-		int rnn_pred = argmax(rnn_out);
+		int rnn_pred = ::argmax(rnn_out);
 		
 		//Run HTM
 		auto htm_out = player2.compute(rnn_last_move);
-		int htm_pred = argmax(htm_out);
+		int htm_pred = ::argmax(htm_out);
 		
 		int rnn_move = predToMove(rnn_pred);
 		int htm_move = predToMove(htm_pred);
@@ -254,8 +254,8 @@ int main()
 	}
 
 	std::cout << "After all the battles" << std::endl;
-	std::cout << "RNN Wins " << rnn_win << " times, " << (float)rnn_win/num_games << "%\n";
-	std::cout << "HTM Wins " << htm_win << " times, " << (float)htm_win/num_games << "%\n";
+	std::cout << "RNN Wins " << rnn_win << " times, " << 100.f*(float)rnn_win/num_games << "%\n";
+	std::cout << "HTM Wins " << htm_win << " times, " << 100.f*(float)htm_win/num_games << "%\n";
 	std::cout << "draw: " << draw << std::endl;
 
 
